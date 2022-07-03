@@ -1,24 +1,51 @@
-import logo from './logo.svg';
 import './App.css';
+
+const welcome = {
+    greeting: 'Hello',
+    title: 'Yiran',
+};
+
+const numbers = [1, 2, 3, 4];
+const exponentialNumbers = numbers.map((number) => number * number);
+const list = [
+    {
+        title: 'React',
+        url: 'https://reactjs.org',
+        author: 'Jordan Walke',
+        points: 5,
+        num_comments: 3,
+        objectID: 0,
+    },
+    {
+        title: 'Redux',
+        url: 'https://redux.js.org',
+        author: 'Dan',
+        points: 6,
+        num_comments: 2,
+        objectID: 1,
+    }
+]
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <div>
+     <h1>{welcome.greeting}, {welcome.title}</h1>
+       <label htmlFor="search">Search: </label>
+       <input id="search" type="text"/>
+       <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
+       <ul>
+           {list.map((item) => {
+               return (
+                   <li key={item.objectID}>
+                       <span><a href={item.url}>{item.title}</a></span>
+                       <span>{item.author}</span>
+                       <span>{item.num_comments}</span>
+                       <span>{item.points}</span>
+                   </li>
+                   )
+           })}
+       </ul>
+   </div>
   );
 }
 
