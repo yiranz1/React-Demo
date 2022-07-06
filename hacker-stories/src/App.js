@@ -55,10 +55,15 @@ const List = () => {
 }
 
 const Search = () => {
+    const handleChanges = (event) => {
+        console.log(event);
+        console.log(event.target.value);
+    }
+
     return (
         <div>
             <label htmlFor="search">Search: </label>
-            <input id="search" type="text"/>
+            <input id="search" type="text" onChange={handleChanges} />
         </div>
     );
 }
