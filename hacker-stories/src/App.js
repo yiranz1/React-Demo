@@ -11,6 +11,7 @@ const exponentialNumbers = numbers.map((number) => number * number);
 
 
 const App = () => {
+    const [searchTerm, setSearchTerm] = useState('');
     const stories = [
         {
             title: 'React',
@@ -29,13 +30,18 @@ const App = () => {
             objectID: 1,
         }
     ]
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+        console.log(searchTerm);
+    }
+    const searchedStories = stories.filter((story) => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
    <div>
      <h1>{welcome.greeting}, {welcome.title}</h1>
-       <Search />
+       <Search onSearch={handleSearch} />
        <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
-       <List list={stories} />
+       <List list={searchedStories} />
    </div>
   );
 }
@@ -59,19 +65,11 @@ const Item = (props) => {
     );
 }
 
-const Search = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const handleChanges = (event) => {
-        console.log(event);
-        console.log(event.target.value);
-        setSearchTerm(event.target.value);
-    }
-
+const Search = (props) => {
     return (
         <div>
             <label htmlFor="search">Search: </label>
-            <input id="search" type="text" onChange={handleChanges} />
-            <p>Searching for <strong>{searchTerm}</strong></p>
+            <input id="search" type="text" onChange={props.onSearch} />
         </div>
     );
 }
