@@ -1,4 +1,5 @@
 import './App.css';
+import {useState} from "react";
 
 const welcome = {
     greeting: 'Hello',
@@ -59,15 +60,18 @@ const Item = (props) => {
 }
 
 const Search = () => {
+    const [searchTerm, setSearchTerm] = useState('');
     const handleChanges = (event) => {
         console.log(event);
         console.log(event.target.value);
+        setSearchTerm(event.target.value);
     }
 
     return (
         <div>
             <label htmlFor="search">Search: </label>
             <input id="search" type="text" onChange={handleChanges} />
+            <p>Searching for <strong>{searchTerm}</strong></p>
         </div>
     );
 }
