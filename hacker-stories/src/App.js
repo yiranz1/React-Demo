@@ -65,8 +65,7 @@ const Item = ({ title, url, author, num_comments, points }) => {
     );
 }
 
-const Search = (props) => {
-    const { search, onSearch } = props;
+const Search = ({ search, onSearch }) => {
     return (
         <div>
             <label htmlFor="search">Search: </label>
