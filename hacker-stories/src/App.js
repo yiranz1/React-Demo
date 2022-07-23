@@ -49,18 +49,18 @@ const App = () => {
 const List = (props) => {
     return (
         <ul>
-            {props.list.map((item) => <Item item={item} key={item.objectID} />)}
+            {props.list.map(({ objectID, ...item }) => <Item {...item} key={objectID} />)}
         </ul>
     );
 }
 
-const Item = ({ item }) => {
+const Item = ({ title, url, author, num_comments, points }) => {
     return (
         <li>
-            <span><a href={item.url}>{item.title}</a></span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
+            <span><a href={url}>{title}</a></span>
+            <span>{author}</span>
+            <span>{num_comments}</span>
+            <span>{points}</span>
         </li>
     );
 }
