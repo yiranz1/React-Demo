@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from "react";
+import React from "react";
 
 const welcome = {
     greeting: 'Hello',
@@ -9,15 +9,20 @@ const welcome = {
 const numbers = [1, 2, 3, 4];
 const exponentialNumbers = numbers.map((number) => number * number);
 
-
-const App = () => {
-    const [searchTerm, setSearchTerm] = useState(
-        localStorage.getItem('search') || 'React'
+const useStorageState = (key, initialState) => {
+    const [value, setValue] = React.useState(
+        localStorage.getItem(key) || initialState
     );
 
-    useEffect(() => {
-        localStorage.setItem('search', searchTerm);
-    }, [searchTerm]);
+    React.useEffect(() => {
+        localStorage.setItem(key, value);
+    }, [key, value]);
+
+    return [value, setValue];
+}
+
+const App = () => {
+    const [searchTerm, setSearchTerm] = useStorageState('search', 'React')
 
     const stories = [
         {
