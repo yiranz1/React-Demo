@@ -53,10 +53,11 @@ const App = () => {
      <h1>{welcome.greeting}, {welcome.title}</h1>
        <InputWithLabel
            id="search"
-           label="Search: "
            value={searchTerm}
            onInputChange={handleSearch}
-       />
+       >
+           <strong>Search: </strong>
+       </InputWithLabel>
        <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
        <List list={searchedStories} />
    </div>
@@ -84,14 +85,14 @@ const Item = ({ title, url, author, num_comments, points }) => {
 
 const InputWithLabel = ({
     id,
-    label,
+    children,
     type = 'text',
     value,
     onInputChange
 }) => {
     return (
         <div>
-            <label htmlFor={id}>{label}</label>
+            <label htmlFor={id}>{children}</label>
             <input id={id} type={type} value={value} onChange={onInputChange} />
         </div>
     );
