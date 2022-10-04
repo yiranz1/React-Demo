@@ -8,6 +8,7 @@ const welcome = {
 
 const numbers = [1, 2, 3, 4];
 const exponentialNumbers = numbers.map((number) => number * number);
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query='
 
 const useStorageState = (key, initialState) => {
     const [value, setValue] = React.useState(
@@ -19,40 +20,6 @@ const useStorageState = (key, initialState) => {
     }, [key, value]);
 
     return [value, setValue];
-}
-
-const initialStories = [
-    {
-        title: 'React',
-        url: 'https://reactjs.org',
-        author: 'Jordan Walke',
-        points: 5,
-        num_comments: 3,
-        objectID: 0,
-    },
-    {
-        title: 'Redux',
-        url: 'https://redux.js.org',
-        author: 'Dan',
-        points: 6,
-        num_comments: 2,
-        objectID: 1,
-    },
-    {
-        title: 'Django',
-        url: 'https://django.com',
-        author: 'HHHHH',
-        points: 9,
-        num_comments: 3,
-        objectID: 2,
-    },
-];
-
-const getAsyncStories = () => {
-    return new Promise((resolve, reject) => {
-        // setTimeout(reject, 2000);
-        setTimeout(() => resolve({ data: { stories: initialStories }}), 1000);
-    });
 }
 
 const storiesReducer = (state, action) => {
@@ -94,16 +61,22 @@ const App = () => {
     );
 
     React.useEffect(() => {
+        if (!searchTerm) {
+            return;
+        }
         dispatchStories({ type: 'STORIES_FETCH_INIT' });
-        getAsyncStories().then(result => {
-            dispatchStories({
-                type: 'STORIES_FETCH_SUCCESS',
-                payload: result.data.stories,
+        fetch(`${API_ENDPOINT}${searchTerm}`)
+            .then((response) => response.json())
+            .then((result) => {
+                dispatchStories({
+                    type: 'STORIES_FETCH_SUCCESS',
+                    payload: result.hits,
+                });
+            })
+            .catch(() => {
+                dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
             });
-        }).catch(() => {
-            dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
-        })
-    }, []);
+    }, [searchTerm]);
 
     const handleRemoveStory = (item) => {
         dispatchStories({
@@ -116,7 +89,6 @@ const App = () => {
         setSearchTerm(event.target.value);
         console.log(searchTerm);
     }
-    const searchedStories = stories.data.filter((story) => story.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
    <div>
@@ -131,7 +103,7 @@ const App = () => {
        <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
        {stories.isError && <p>Something went wrong...</p>}
        {stories.isLoading ? (<p>Loading...</p>) :
-           (<List list={searchedStories} onRemoveItem={handleRemoveStory} />)
+           (<List list={stories.data} onRemoveItem={handleRemoveStory} />)
        }
 
    </div>
