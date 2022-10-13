@@ -37,14 +37,6 @@
   }
 }
 
-.container {
-  height: 100vw;
-  padding: 20px;
-  background: #83a4d4;
-  background: linear-gradient(to left, #b6fbff, #83a4d4);
-  color: #171212;
-}
-
 .headline-primary {
   font-size: 48px;
   font-weight: 300;
@@ -66,27 +58,6 @@
 
 .item > span > a {
   color: inherit;
-}
-
-.button {
-  background: transparent;
-  border: 1px solid #171212;
-  padding: 5px;
-  cursor: pointer;
-  transition: all 0.1s ease-in;
-}
-
-.button:hover {
-  background: #171212;
-  color: #ffffff;
-}
-
-.button_small {
-  padding: 5px;
-}
-
-.button_large {
-  padding: 10px;
 }
 
 .search-form {

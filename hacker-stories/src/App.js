@@ -1,6 +1,7 @@
 import './App.css';
 import React from "react";
 import axios from "axios";
+import styled from "styled-components";
 
 const welcome = {
     greeting: 'Hello',
@@ -54,6 +55,35 @@ const storiesReducer = (state, action) => {
     }
 }
 
+const StyledContainer = styled.div`
+    height: 100vw;
+    padding: 20px;
+    background: #83a4d4;
+    background: linear-gradient(to left, #b6fbff, #83a4d4);
+    color: #171212;
+`;
+
+const StyledButton = styled.button`
+    background: transparent;
+    border: 1px solid #171212;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.1s ease-in;
+    
+    &:hover {
+        background: #171212;
+        color: #ffffff;
+    }
+`;
+
+const StyledButtonSmall = styled(StyledButton)`
+    padding: 5px;
+`;
+
+const StyledButtonLarge = styled(StyledButton)`
+    padding: 10px;
+`;
+
 const App = () => {
     const [searchTerm, setSearchTerm] = useStorageState('search', 'React');
     const [stories, dispatchStories] = React.useReducer(
@@ -96,7 +126,7 @@ const App = () => {
     }
 
   return (
-   <div className="container">
+   <StyledContainer>
      <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
        <SearchForm
            searchTerm={searchTerm}
@@ -109,7 +139,7 @@ const App = () => {
            (<List list={stories.data} onRemoveItem={handleRemoveStory} />)
        }
 
-   </div>
+   </StyledContainer>
   );
 }
 
@@ -126,13 +156,12 @@ const SearchForm = ({
         >
             <strong>Search: </strong>
         </InputWithLabel>
-        <button
+        <StyledButtonLarge
             type="submit"
             disabled={!searchTerm}
-            className="button button_large"
         >
             Submit
-        </button>
+        </StyledButtonLarge>
     </form>
 );
 
@@ -152,13 +181,12 @@ const Item = ({ item, onRemoveItem }) => {
             <span style={{ width: '10%' }}>{item.num_comments}</span>
             <span style={{ width: '10%' }}>{item.points}</span>
             <span style={{ width: '10%' }}>
-                <button
+                <StyledButtonSmall
                     type="button"
-                    className="button button_small"
                     onClick={() => onRemoveItem(item)}
                 >
                     Dismiss
-                </button>
+                </StyledButtonSmall>
             </span>
         </li>
     );
