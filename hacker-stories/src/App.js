@@ -91,6 +91,7 @@ const App = () => {
         {data: [], isLoading: false, isError: false}
     );
     const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
+    console.log("B: App");
 
     const handleFetchStories = React.useCallback(async () => {
         dispatchStories({ type: 'STORIES_FETCH_INIT' });
@@ -109,12 +110,12 @@ const App = () => {
         handleFetchStories();
     }, [handleFetchStories]);
 
-    const handleRemoveStory = (item) => {
+    const handleRemoveStory = React.useCallback((item) => {
         dispatchStories({
             type: 'REMOVE_STORIES',
             payload: item,
         });
-    }
+    }, []);
 
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
@@ -165,13 +166,14 @@ const SearchForm = ({
     </form>
 );
 
-const List = ({ list, onRemoveItem }) => {
+const List = React.memo(({ list, onRemoveItem }) => {
+    console.log("B: List");
     return (
         <ul>
             {list.map((item) => <Item item={item} key={item.objectID} onRemoveItem={onRemoveItem} />)}
         </ul>
     );
-}
+});
 
 const Item = ({ item, onRemoveItem }) => {
     return (
