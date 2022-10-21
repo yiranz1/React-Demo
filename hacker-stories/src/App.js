@@ -84,6 +84,11 @@ const StyledButtonLarge = styled(StyledButton)`
     padding: 10px;
 `;
 
+const getSumComments = (stories) => {
+    console.log('C');
+    return stories.data.reduce((result, value) => result + value.num_comments, 0);
+}
+
 const App = () => {
     const [searchTerm, setSearchTerm] = useStorageState('search', 'React');
     const [stories, dispatchStories] = React.useReducer(
@@ -125,10 +130,12 @@ const App = () => {
         setUrl(`${API_ENDPOINT}${searchTerm}`);
         event.preventDefault();
     }
+    const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
   return (
    <StyledContainer>
      <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
+       <h2>My Hacker Stories with {sumComments} comments.</h2>
        <SearchForm
            searchTerm={searchTerm}
            onSearchInput={handleSearchInput}
