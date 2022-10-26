@@ -1,7 +1,16 @@
 import './App.css';
-import React from "react";
+import * as React from "react";
 import axios from "axios";
 import styled from "styled-components";
+
+type Story = {
+    objectID: string,
+    url: string,
+    title: string,
+    author: string,
+    num_comments: number,
+    points: number,
+};
 
 const welcome = {
     greeting: 'Hello',
@@ -173,7 +182,11 @@ const SearchForm = ({
     </form>
 );
 
-const List = React.memo(({ list, onRemoveItem }) => {
+type ListProps = {
+    list: Array<Story>,
+    onRemoveItem: (item: Story) => void;
+}
+const List = React.memo(({ list, onRemoveItem }: ListProps) => {
     console.log("B: List");
     return (
         <ul>
@@ -182,7 +195,12 @@ const List = React.memo(({ list, onRemoveItem }) => {
     );
 });
 
-const Item = ({ item, onRemoveItem }) => {
+type ItemProps = {
+    item: Story,
+    onRemoveItem: (item: Story) => void,
+};
+
+const Item = ({ item, onRemoveItem } : ItemProps) => {
     return (
         <li className="item">
             <span style={{ width: '40%' }}><a href={item.url}>{item.title}</a></span>
