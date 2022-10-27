@@ -33,7 +33,31 @@ const useStorageState = (key, initialState) => {
     return [value, setValue];
 }
 
-const storiesReducer = (state, action) => {
+interface StoriesFetchInitAction {
+    type: 'STORIES_FETCH_INIT',
+}
+
+interface StoriesFetchSuccessAction {
+    type: 'STORIES_FETCH_SUCCESS',
+    payload: Array<Story>,
+}
+
+interface StoriesFetchFailureAction {
+    type: 'STORIES_FETCH_FAILURE',
+}
+
+interface StoriesRemoveAction {
+    type: 'REMOVE_STORY',
+    payload: Story,
+}
+
+type StoriesAction =
+    | StoriesFetchInitAction
+    | StoriesFetchSuccessAction
+    | StoriesFetchFailureAction
+    | StoriesRemoveAction;
+
+const storiesReducer = (state, action: StoriesAction) => {
     switch (action.type) {
         case 'STORIES_FETCH_INIT':
             return {
@@ -126,7 +150,7 @@ const App = () => {
 
     const handleRemoveStory = React.useCallback((item) => {
         dispatchStories({
-            type: 'REMOVE_STORIES',
+            type: 'REMOVE_STORY',
             payload: item,
         });
     }, []);
