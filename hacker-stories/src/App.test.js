@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import * as React from 'react';
 import App, {
   storiesReducer,
@@ -44,5 +44,24 @@ describe('storiesReducer', () => {
     };
 
     expect(newState).toEqual(expectedState);
+  });
+});
+
+describe("Item", () => {
+  test("renders all properties", () => {
+    render(<Item item={storyOne} onRemoveItem={() => {console.log('')}} />);
+
+    expect(screen.getByText('Jordan')).toBeInTheDocument();
+    expect(screen.getByText('React')).toHaveAttribute(
+        'href',
+        'https://reactjs.org/'
+    );
+  });
+
+  test("clicking the dismiss button calls the callback handler", () => {
+    const handleRemoveItem = jest.fn();
+    render(<Item item={storyOne} onRemoveItem={handleRemoveItem} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleRemoveItem).toHaveBeenCalledTimes(1);
   });
 });
