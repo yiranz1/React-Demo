@@ -1,4 +1,4 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, act} from '@testing-library/react';
 import * as React from 'react';
 import App, {
   storiesReducer,
@@ -7,6 +7,7 @@ import App, {
   SearchForm,
   InputWithLabel
 } from './App';
+import axios from 'axios';
 
 const storyOne = {
   title: 'React',
@@ -27,6 +28,8 @@ const storyTwo = {
 };
 
 const stories = [storyOne, storyTwo];
+
+jest.mock('axios');
 
 describe('storiesReducer', () => {
   test('removes a story from all stories', () => {
@@ -93,3 +96,19 @@ describe("SearchForm", () => {
     expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("App", () => {
+  test("succeeds fetching data", async () => {
+    const promise = Promise.resolve({
+      data: {
+        hits: stories,
+      }
+    });
+
+    axios.get.mockImplementationOnce(() => promise);
+    render(<App />);
+    screen.debug();
+    await act(() => promise);
+    screen.debug()
+  })
+})
