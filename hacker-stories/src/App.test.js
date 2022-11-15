@@ -107,8 +107,13 @@ describe("App", () => {
 
     axios.get.mockImplementationOnce(() => promise);
     render(<App />);
-    screen.debug();
+    expect(screen.getByText(/Loading/)).toBeInTheDocument();
     await act(() => promise);
-    screen.debug()
-  })
-})
+    expect(screen.queryByText(/Loading/)).toBeNull();
+
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('Redux')).toBeInTheDocument();
+    expect(screen.getAllByText('Dismiss').length).toBe(2);
+  });
+});
+
