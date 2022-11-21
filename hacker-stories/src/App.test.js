@@ -115,5 +115,12 @@ describe("App", () => {
     expect(screen.getByText('Redux')).toBeInTheDocument();
     expect(screen.getAllByText('Dismiss').length).toBe(2);
   });
+
+  test("fails fetching data", async () => {
+      const promise = Promise.reject();
+      axios.get.mockImplementationOnce(() => promise);
+      await act( async () => render(<App />));
+      expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
+  });
 });
 
