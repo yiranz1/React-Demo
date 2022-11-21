@@ -12,7 +12,7 @@ import axios from 'axios';
 const storyOne = {
   title: 'React',
   url: 'https://reactjs.org/',
-  author: 'Jordan',
+  author: 'Jordan Walke',
   num_comments: 3,
   points: 4,
   objectID: 0,
@@ -54,7 +54,7 @@ describe("Item", () => {
   test("renders all properties", () => {
     render(<Item item={storyOne} onRemoveItem={() => {console.log('')}} />);
 
-    expect(screen.getByText('Jordan')).toBeInTheDocument();
+    expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
     expect(screen.getByText('React')).toHaveAttribute(
         'href',
         'https://reactjs.org/'
@@ -122,5 +122,23 @@ describe("App", () => {
       await act( async () => render(<App />));
       expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
   });
+
+  test("removes a story", async () => {
+    const promise = Promise.resolve({
+      data: {
+        hits: stories,
+      }
+    });
+
+    axios.get.mockImplementationOnce(() => promise);
+    render(<App />);
+    await act(() => promise);
+    expect(screen.getAllByText("Dismiss").length).toBe(2);
+    expect(screen.getByText("Jordan Walke")).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByText("Dismiss")[0]);
+    expect(screen.getAllByText("Dismiss").length).toBe(1);
+    expect(screen.queryByText("Jordan Walke")).toBeNull();
+  })
 });
 

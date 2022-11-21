@@ -140,7 +140,6 @@ const App = () => {
                 payload: result.data.hits,
             });
         } catch {
-            console.log("Should be here");
             dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
         }
     }, [url]);
@@ -165,7 +164,6 @@ const App = () => {
         event.preventDefault();
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
-    console.log(stories.isError);
 
   return (
    <StyledContainer>
