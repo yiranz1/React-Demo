@@ -2,6 +2,8 @@ import './App.css';
 import * as React from "react";
 import axios from "axios";
 import styled from "styled-components";
+// @ts-ignore
+import { InputWithLabel } from "./InputWithLabel.tsx";
 
 type Story = {
     objectID: string,
@@ -211,7 +213,7 @@ type ListProps = {
     onRemoveItem: (item: Story) => void;
 }
 const List = React.memo(({ list, onRemoveItem }: ListProps) => {
-    console.log("B: List");
+    console.log("B: InputWithLabel");
     return (
         <ul>
             {list.map((item) => <Item item={item} key={item.objectID} onRemoveItem={onRemoveItem} />)}
@@ -243,28 +245,5 @@ const Item = ({ item, onRemoveItem } : ItemProps) => {
     );
 }
 
-type InputWithLabelProps = {
-    id: string,
-    value: string,
-    type?: string,
-    onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    children: React.ReactNode,
-}
-
-const InputWithLabel = ({
-    id,
-    children,
-    type = 'text',
-    value,
-    onInputChange
-}: InputWithLabelProps) => {
-    return (
-        <div>
-            <label htmlFor={id} className="label">{children}</label>
-            <input id={id} type={type} value={value} onChange={onInputChange} className="input" />
-        </div>
-    );
-}
-
 export default App;
-export { storiesReducer, SearchForm, InputWithLabel, List, Item };
+export { storiesReducer, SearchForm, List, Item };

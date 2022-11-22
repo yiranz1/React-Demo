@@ -3,9 +3,7 @@ import * as React from 'react';
 import App, {
   storiesReducer,
   Item,
-  List,
   SearchForm,
-  InputWithLabel
 } from './App';
 import axios from 'axios';
 
