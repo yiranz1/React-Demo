@@ -139,6 +139,56 @@ describe("App", () => {
     fireEvent.click(screen.getAllByText("Dismiss")[0]);
     expect(screen.getAllByText("Dismiss").length).toBe(1);
     expect(screen.queryByText("Jordan Walke")).toBeNull();
-  })
+  });
+
+  test("searches for specific stories", async () => {
+    const reactPromise = Promise.resolve({
+      data: {
+        hits: stories,
+      }
+    });
+    
+    const anotherStory = {
+      title: 'JavaScript',
+      url: 'https://en.wikipedia.org/wiki/JavaScript',
+      author: 'Brendan Eich',
+      num_comments: 10,
+      points: 10,
+      objectID: 3,
+    };
+
+    const javascriptPromise = Promise.resolve({
+      data: {
+        hits: [anotherStory],
+      }
+    });
+
+    axios.get.mockImplementation((url) => {
+      if (url.includes('React')) {
+        return reactPromise;
+      }
+      if (url.includes('JavaScript')) {
+        return javascriptPromise;
+      }
+      throw Error();
+    });
+
+    render(<App />);
+    await act(() => reactPromise);
+    expect(screen.queryByDisplayValue('React')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('JavaScript')).toBeNull();
+
+    fireEvent.change(screen.queryByDisplayValue('React'), {
+      target: {
+        value: 'JavaScript',
+      }
+    });
+    expect(screen.queryByDisplayValue('JavaScript')).toBeInTheDocument();
+
+    fireEvent.submit(screen.queryByText('Submit'));
+    await act(() => javascriptPromise);
+    expect(screen.queryByText('Jordan Walke')).toBeNull();
+    expect(screen.getByText('Brendan Eich')).toBeInTheDocument();
+  });
 });
 
