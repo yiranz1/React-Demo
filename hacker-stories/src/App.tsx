@@ -4,6 +4,7 @@ import axios from "axios";
 import styled from "styled-components";
 // @ts-ignore
 import { InputWithLabel } from "./InputWithLabel.tsx";
+import { sortBy } from "lodash";
 
 type Story = {
     objectID: string,
@@ -167,30 +168,30 @@ const App = () => {
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
-  return (
-   <StyledContainer>
-     <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
-       <h2>My Hacker Stories with {sumComments} comments.</h2>
-       <SearchForm
-           searchTerm={searchTerm}
-           onSearchInput={handleSearchInput}
-           onSearchSubmit={handleSearchSubmit}
-       />
-       <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
-       {stories.isError && <p>Something went wrong...</p>}
-       {stories.isLoading ? (<p>Loading...</p>) :
-           (<List list={stories.data} onRemoveItem={handleRemoveStory} />)
-       }
+    return (
+        <StyledContainer>
+            <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
+            <h2>My Hacker Stories with {sumComments} comments.</h2>
+            <SearchForm
+                searchTerm={searchTerm}
+                onSearchInput={handleSearchInput}
+                onSearchSubmit={handleSearchSubmit}
+            />
+            <div>Exponential Numbers: {JSON.stringify(exponentialNumbers)}</div>
+            {stories.isError && <p>Something went wrong...</p>}
+            {stories.isLoading ? (<p>Loading...</p>) :
+                (<List list={stories.data} onRemoveItem={handleRemoveStory} />)
+            }
 
-   </StyledContainer>
-  );
+        </StyledContainer>
+    );
 }
 
 const SearchForm = ({
-    searchTerm,
-    onSearchInput,
-    onSearchSubmit
-}) => (
+                        searchTerm,
+                        onSearchInput,
+                        onSearchSubmit
+                    }) => (
     <form onSubmit={onSearchSubmit} className="search-form">
         <InputWithLabel
             id="search"
@@ -208,22 +209,56 @@ const SearchForm = ({
     </form>
 );
 
+const SORTS = {
+    NONE: (list) => list,
+    TITLE: (list) => sortBy(list, 'title'),
+    AUTHOR: (list) => sortBy(list, 'author'),
+    COMMENT: (list) => sortBy(list, 'num_comments').reverse(),
+    POINT: (list) => sortBy(list, 'points').reverse(),
+};
+
 type ListProps = {
     list: Array<Story>,
     onRemoveItem: (item: Story) => void;
 }
 const List = React.memo(({ list, onRemoveItem }: ListProps) => {
     console.log("B: InputWithLabel");
+    const [sort, setSort] = React.useState('NONE');
+    const handleSort = (sortKey) => {
+        setSort(sortKey);
+    };
+
+    const sortFunction = SORTS[sort];
+    const sortedList = sortFunction(list);
+
     return (
         <ul>
             <li style={{ display: 'flex' }}>
-                <span style={{ width : '40%' }}>Title</span>
-                <span style={{ width : '30%' }}>Author</span>
-                <span style={{ width : '10%' }}>Comments</span>
-                <span style={{ width : '10%' }}>Points</span>
-                <span style={{ width : '10%' }}>Actions</span>
+                <span style={{ width : '40%' }}>
+                    <button onClick={() => handleSort('TITLE')}>
+                        Title
+                    </button>
+                </span>
+                <span style={{ width : '30%' }}>
+                    <button onClick={() => handleSort('AUTHOR')}>
+                        Author
+                    </button>
+                </span>
+                <span style={{ width : '10%' }}>
+                    <button onClick={() => handleSort('COMMENT')}>
+                        Comments
+                    </button>
+                </span>
+                <span style={{ width : '10%' }}>
+                    <button onClick={() => handleSort('POINT')}>
+                        Points
+                    </button>
+                </span>
+                <span style={{ width : '10%' }}>
+                    Actions
+                </span>
             </li>
-            {list.map((item) => <Item item={item} key={item.objectID} onRemoveItem={onRemoveItem} />)}
+            {sortedList.map((item) => <Item item={item} key={item.objectID} onRemoveItem={onRemoveItem} />)}
         </ul>
     );
 });
