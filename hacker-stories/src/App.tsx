@@ -131,13 +131,16 @@ const App = () => {
         storiesReducer,
         {data: [], isLoading: false, isError: false}
     );
-    const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
+    const [urls, setUrls] = React.useState([
+        `${API_ENDPOINT}${searchTerm}`,
+    ]);
     console.log("B: App");
 
     const handleFetchStories = React.useCallback(async () => {
         dispatchStories({ type: 'STORIES_FETCH_INIT' });
         try {
-            const result = await axios.get(url);
+            const lastUrl = urls[urls.length - 1]
+            const result = await axios.get(lastUrl);
             dispatchStories({
                 type: 'STORIES_FETCH_SUCCESS',
                 payload: result.data.hits,
@@ -145,7 +148,7 @@ const App = () => {
         } catch {
             dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
         }
-    }, [url]);
+    }, [urls]);
 
     React.useEffect(() => {
         handleFetchStories();
@@ -163,7 +166,8 @@ const App = () => {
     }
 
     const handleSearchSubmit = (event) => {
-        setUrl(`${API_ENDPOINT}${searchTerm}`);
+        const url = `${API_ENDPOINT}${searchTerm}`;
+        setUrls(urls.concat(url));
         event.preventDefault();
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
