@@ -125,6 +125,11 @@ const getSumComments = (stories) => {
     return stories.data.reduce((result, value) => result + value.num_comments, 0);
 }
 
+const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
+const getLastSearches = (urls) => {
+    return urls.slice(-5).map(url => extractSearchTerm(url));
+};
+
 const App = () => {
     const [searchTerm, setSearchTerm] = useStorageState('search', 'React');
     const [stories, dispatchStories] = React.useReducer(
@@ -172,10 +177,24 @@ const App = () => {
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
+    const handleLastSearch = (url) => {
+        console.log(url);
+    }
+    const lastSearches = getLastSearches(urls);
+
     return (
         <StyledContainer>
             <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
             <h2>My Hacker Stories with {sumComments} comments.</h2>
+            {lastSearches.map((searchTerm) => (
+                <button
+                    key={searchTerm}
+                    type="button"
+                    onClick={() => handleLastSearch(searchTerm)}
+                >
+                    {searchTerm}
+                </button>
+            ))}
             <SearchForm
                 searchTerm={searchTerm}
                 onSearchInput={handleSearchInput}
