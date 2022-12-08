@@ -170,15 +170,19 @@ const App = () => {
         setSearchTerm(event.target.value);
     }
 
-    const handleSearchSubmit = (event) => {
+    const handleSearch = (searchTerm) => {
         const url = `${API_ENDPOINT}${searchTerm}`;
         setUrls(urls.concat(url));
+    }
+
+    const handleSearchSubmit = (event) => {
+        handleSearch(searchTerm);
         event.preventDefault();
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
-    const handleLastSearch = (url) => {
-        console.log(url);
+    const handleLastSearch = (searchTerm) => {
+        handleSearch(searchTerm)
     }
     const lastSearches = getLastSearches(urls);
 
@@ -186,9 +190,9 @@ const App = () => {
         <StyledContainer>
             <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
             <h2>My Hacker Stories with {sumComments} comments.</h2>
-            {lastSearches.map((searchTerm) => (
+            {lastSearches.map((searchTerm, index) => (
                 <button
-                    key={searchTerm}
+                    key={searchTerm + index}
                     type="button"
                     onClick={() => handleLastSearch(searchTerm)}
                 >
