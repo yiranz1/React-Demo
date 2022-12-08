@@ -125,6 +125,7 @@ const getSumComments = (stories) => {
     return stories.data.reduce((result, value) => result + value.num_comments, 0);
 }
 
+const getUrl = (searchTerm) => `${API_ENDPOINT}${searchTerm}`;
 const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
 const getLastSearches = (urls) => {
     return urls
@@ -151,9 +152,7 @@ const App = () => {
         storiesReducer,
         {data: [], isLoading: false, isError: false}
     );
-    const [urls, setUrls] = React.useState([
-        `${API_ENDPOINT}${searchTerm}`,
-    ]);
+    const [urls, setUrls] = React.useState([getUrl(searchTerm)]);
     console.log("B: App");
 
     const handleFetchStories = React.useCallback(async () => {
@@ -186,7 +185,7 @@ const App = () => {
     }
 
     const handleSearch = (searchTerm) => {
-        const url = `${API_ENDPOINT}${searchTerm}`;
+        const url = getUrl(searchTerm);
         setUrls(urls.concat(url));
     }
 
