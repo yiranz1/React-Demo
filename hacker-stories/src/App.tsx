@@ -206,15 +206,7 @@ const App = () => {
         <StyledContainer>
             <h1 className="headline-primary">{welcome.greeting}, {welcome.title}</h1>
             <h2>My Hacker Stories with {sumComments} comments.</h2>
-            {lastSearches.map((searchTerm, index) => (
-                <button
-                    key={searchTerm + index}
-                    type="button"
-                    onClick={() => handleLastSearch(searchTerm)}
-                >
-                    {searchTerm}
-                </button>
-            ))}
+            <LastSearches lastSearches={lastSearches} onLastSearch={handleLastSearch} />
             <SearchForm
                 searchTerm={searchTerm}
                 onSearchInput={handleSearchInput}
@@ -229,6 +221,20 @@ const App = () => {
         </StyledContainer>
     );
 }
+
+const LastSearches = ({ lastSearches, onLastSearch }) => (
+    <>
+        {lastSearches.map((searchTerm, index) => (
+            <button
+                key={searchTerm + index}
+                type="button"
+                onClick={() => onLastSearch(searchTerm)}
+            >
+                {searchTerm}
+            </button>
+        ))}
+    </>
+)
 
 const SearchForm = ({
                         searchTerm,
