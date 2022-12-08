@@ -23,6 +23,9 @@ const welcome = {
 const numbers = [1, 2, 3, 4];
 const exponentialNumbers = numbers.map((number) => number * number);
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query='
+const API_BASE = 'https://hn.algolia.com/api/v1';
+const API_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
 
 const useStorageState = (key, initialState) => {
     const [value, setValue] = React.useState(
@@ -125,7 +128,7 @@ const getSumComments = (stories) => {
     return stories.data.reduce((result, value) => result + value.num_comments, 0);
 }
 
-const getUrl = (searchTerm) => `${API_ENDPOINT}${searchTerm}`;
+const getUrl = (searchTerm) => `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}`;
 const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
 const getLastSearches = (urls) => {
     return urls
