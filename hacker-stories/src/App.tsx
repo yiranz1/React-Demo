@@ -127,7 +127,22 @@ const getSumComments = (stories) => {
 
 const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
 const getLastSearches = (urls) => {
-    return urls.slice(-5).map(url => extractSearchTerm(url));
+    return urls
+        .reduce((result, url, index) => {
+            const searchTerm = extractSearchTerm(url);
+            if (index === 0) {
+                return result.concat(searchTerm);
+            }
+
+            const previousSearchTerm = result[result.length - 1];
+            if (searchTerm === previousSearchTerm) {
+                return result;
+            } else {
+                return result.concat(searchTerm);
+            }
+        }, [])
+        .slice(-6)
+        .slice(0, -1);
 };
 
 const App = () => {
@@ -182,6 +197,7 @@ const App = () => {
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
     const handleLastSearch = (searchTerm) => {
+        setSearchTerm(searchTerm);
         handleSearch(searchTerm)
     }
     const lastSearches = getLastSearches(urls);
