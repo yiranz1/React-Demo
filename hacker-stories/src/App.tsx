@@ -45,7 +45,10 @@ interface StoriesFetchInitAction {
 
 interface StoriesFetchSuccessAction {
     type: 'STORIES_FETCH_SUCCESS',
-    payload: Array<Story>,
+    payload: {
+        list: Array<Story>,
+        page: number,
+    }
 }
 
 interface StoriesFetchFailureAction {
@@ -76,7 +79,8 @@ const storiesReducer = (state, action: StoriesAction) => {
                 ...state,
                 isLoading: false,
                 isError: false,
-                data: action.payload,
+                data: action.payload.list,
+                page: action.payload.page,
             };
         case 'STORIES_FETCH_FAILURE':
             return {
@@ -129,7 +133,9 @@ const getSumComments = (stories) => {
 }
 
 const getUrl = (searchTerm) => `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}`;
-const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
+const extractSearchTerm = (url) =>
+    url.substring(url.lastIndexOf('?') + 1, url.lastIndexOf('&'))
+        .replace(PARAM_SEARCH, '');
 const getLastSearches = (urls) => {
     return urls
         .reduce((result, url, index) => {
@@ -153,7 +159,7 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useStorageState('search', 'React');
     const [stories, dispatchStories] = React.useReducer(
         storiesReducer,
-        {data: [], isLoading: false, isError: false}
+        {data: [], page: 0, isLoading: false, isError: false}
     );
     const [urls, setUrls] = React.useState([getUrl(searchTerm)]);
     console.log("B: App");
@@ -165,7 +171,10 @@ const App = () => {
             const result = await axios.get(lastUrl);
             dispatchStories({
                 type: 'STORIES_FETCH_SUCCESS',
-                payload: result.data.hits,
+                payload: {
+                    list: result.data.hits,
+                    page: result.data.page,
+                },
             });
         } catch {
             dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
