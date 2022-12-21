@@ -26,6 +26,7 @@ const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query='
 const API_BASE = 'https://hn.algolia.com/api/v1';
 const API_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page=';
 
 const useStorageState = (key, initialState) => {
     const [value, setValue] = React.useState(
@@ -132,7 +133,7 @@ const getSumComments = (stories) => {
     return stories.data.reduce((result, value) => result + value.num_comments, 0);
 }
 
-const getUrl = (searchTerm) => `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}`;
+const getUrl = (searchTerm, page) => `${API_BASE}${API_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`;
 const extractSearchTerm = (url) =>
     url.substring(url.lastIndexOf('?') + 1, url.lastIndexOf('&'))
         .replace(PARAM_SEARCH, '');
@@ -161,7 +162,7 @@ const App = () => {
         storiesReducer,
         {data: [], page: 0, isLoading: false, isError: false}
     );
-    const [urls, setUrls] = React.useState([getUrl(searchTerm)]);
+    const [urls, setUrls] = React.useState([getUrl(searchTerm, 0)]);
     console.log("B: App");
 
     const handleFetchStories = React.useCallback(async () => {
@@ -196,21 +197,28 @@ const App = () => {
         setSearchTerm(event.target.value);
     }
 
-    const handleSearch = (searchTerm) => {
-        const url = getUrl(searchTerm);
+    const handleSearch = (searchTerm, page) => {
+        const url = getUrl(searchTerm, page);
         setUrls(urls.concat(url));
     }
 
     const handleSearchSubmit = (event) => {
-        handleSearch(searchTerm);
+        handleSearch(searchTerm, 0);
         event.preventDefault();
     }
     const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
 
     const handleLastSearch = (searchTerm) => {
         setSearchTerm(searchTerm);
-        handleSearch(searchTerm)
+        handleSearch(searchTerm, 0)
     }
+
+    const handleMore = () => {
+        const lastUrl = urls[urls.length - 1];
+        const searchTerm = extractSearchTerm(lastUrl);
+        handleSearch(searchTerm, stories.page + 1);
+    }
+
     const lastSearches = getLastSearches(urls);
 
     return (
@@ -228,6 +236,9 @@ const App = () => {
             {stories.isLoading ? (<p>Loading...</p>) :
                 (<List list={stories.data} onRemoveItem={handleRemoveStory} />)
             }
+            <button type="button" onClick={handleMore}>
+                More
+            </button>
 
         </StyledContainer>
     );
