@@ -17,7 +17,7 @@ type Story = {
 
 const welcome = {
     greeting: 'Hello',
-    title: 'Yiran',
+    title: 'Yiran Zhou',
 };
 
 const numbers = [1, 2, 3, 4];
